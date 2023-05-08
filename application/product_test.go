@@ -1,10 +1,11 @@
 package application_test
 
 import (
+	"testing"
+
 	"github.com/codeedu/go-hexagonal/application"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestProduct_Enable(t *testing.T) {
@@ -55,5 +56,50 @@ func TestProduct_IsValid(t *testing.T) {
 
 	product.Price = -10
 	_, err = product.IsValid()
+	require.Equal(t, "the price must be greater or equal zero", err.Error())
+}
+
+func TestProduct_GetStatus(t *testing.T) {
+	product := application.Product{}
+	product.ID = uuid.NewV4().String()
+	product.Name = "hello"
+	product.Status = application.DISABLED
+	product.Price = 10
+
+	require.Equal(t, product.Status, product.GetStatus())
+}
+
+func TestProduct_GetName(t *testing.T) {
+	product := application.Product{}
+	product.ID = uuid.NewV4().String()
+	product.Name = "hello"
+	product.Status = application.DISABLED
+	product.Price = 10
+
+	require.Equal(t, product.Name, product.GetName())
+}
+
+func TestProduct_GetID(t *testing.T) {
+	product := application.Product{}
+	product.ID = uuid.NewV4().String()
+	product.Name = "hello"
+	product.Status = application.DISABLED
+	product.Price = 10
+
+	require.Equal(t, product.ID, product.GetID())
+}
+
+func TestProduct_ChangePrice(t *testing.T) {
+	product := application.Product{}
+	product.ID = uuid.NewV4().String()
+	product.Name = "Hello"
+	product.Status = application.DISABLED
+	product.Price = 10
+
+	err := product.ChangePrice(20)
+	require.Nil(t, err)
+	require.Equal(t, float64(20), product.Price)
+
+	err = product.ChangePrice(-20)
 	require.Equal(t, "the price must be greater or equal zero", err.Error())
 }
